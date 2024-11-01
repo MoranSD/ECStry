@@ -1,7 +1,9 @@
-﻿namespace ECS
+﻿using System.Collections.Generic;
+
+namespace ECS
 {
     public abstract class BaseSystem
     {
-        public abstract void Execute(ECSEntity entity);
+        public abstract void Execute(IEnumerable<ECSEntity> entities);
     }
 }

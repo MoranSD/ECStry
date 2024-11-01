@@ -20,21 +20,30 @@ namespace ECS
                 systems.Add(Activator.CreateInstance(subclass) as BaseSystem);
         }
 
-        public void ExecuteAll<T>() where T : BaseSystem
-        {
-            var targetSystems = systems.FindAll(s => s is T);
+        public List<ECSEntity> GetAllEntities() => entities;
 
-            foreach (var targetSystem in targetSystems)
-                foreach (var entity in entities)
-                    targetSystem.Execute(entity);
+        public void Execute<T>() where T : BaseSystem
+        {
+            var system = systems.FirstOrDefault(s => s is T);
+
+            if (system == null) return;
+
+            system.Execute(entities);
         }
 
-        public void DefineNewEntity(ECSEntity entity)
+        public void AddEntity(ECSEntity entity)
         {
             if(entities.Contains(entity))
                 throw new Exception(entity.GetType().FullName);
 
             entities.Add(entity);
+        }
+        public void RemoveEntity(ECSEntity entity)
+        {
+            if (entities.Contains(entity) == false)
+                throw new Exception(entity.GetType().FullName);
+
+            entities.Remove(entity);
         }
 
         private static Type[] FindAllSubClasses<T>()
